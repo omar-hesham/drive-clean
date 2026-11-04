@@ -1,5 +1,7 @@
 name: tests
-on: [push, pull_request]
+# Manual for now (GitHub Actions is paused on this account). To run on every push, replace with:
+#   on: [push, pull_request]
+on: workflow_dispatch
 jobs:
   test:
     strategy:
