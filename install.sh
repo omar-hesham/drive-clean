@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # drive-analyzer — macOS / Linux installer.
 # Installs once into ~/.agents/skills/drive-analyzer and symlinks it into every installed agent's
-# skills folder (Claude Code, Codex, Gemini CLI, Antigravity, OpenCode, Cursor, Copilot, Kimi).
+# skills folder (Claude Code, Codex, Gemini CLI, Antigravity, OpenCode, ZCode, Cursor, Copilot, Kimi).
 #   ./install.sh               install / update
 #   ./install.sh --uninstall   remove
 #   curl -fsSL https://raw.githubusercontent.com/<owner>/<repo>/main/install.sh | bash
@@ -9,9 +9,11 @@ set -euo pipefail
 NAME=drive-analyzer
 REPO="${DRIVE_ANALYZER_REPO:-https://github.com/omar-hesham/drive-clean.git}"
 CANON="$HOME/.agents/skills/$NAME"
-TARGETS=(".claude/skills" ".codex/skills" ".gemini/skills" ".gemini/config/skills" ".gemini/antigravity/skills"
-         ".config/opencode/skills" ".cursor/skills" ".copilot/skills" ".kimi/skills")
+# Codex and Gemini CLI read ~/.agents/skills already (no ~/.gemini/skills link: Gemini would report a conflict)
+TARGETS=(".claude/skills" ".codex/skills" ".gemini/config/skills" ".gemini/antigravity/skills"
+         ".config/opencode/skills" ".opencode/skills" ".zcode/skills" ".cursor/skills" ".copilot/skills" ".kimi/skills")
 
+[[ -L "$HOME/.gemini/skills/$NAME" ]] && rm "$HOME/.gemini/skills/$NAME" && echo "removed dup   $HOME/.gemini/skills/$NAME"
 agent_root() { case "$1" in .config/*) echo "$HOME/.config/opencode";; *) echo "$HOME/${1%%/*}";; esac; }
 
 if [[ "${1:-}" == "--uninstall" ]]; then

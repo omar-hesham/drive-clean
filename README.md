@@ -38,7 +38,7 @@
 
 المثبّت هيعمل كذا حاجة:
 1. ينزّل السكيل مرة واحدة في `%USERPROFILE%\.agents\skills\drive-analyzer`.
-2. يعمل **junction** ليها في فولدر السكيلز بتاع كل agent متسطب عندك: Claude Code، وCodex، وGemini CLI، وAntigravity، وOpenCode، وCursor، وCopilot، وKimi.
+2. يعمل **junction** ليها في فولدر السكيلز بتاع كل agent متسطب عندك: Claude Code، وCodex، وGemini CLI، وAntigravity، وOpenCode، وZCode (GLM من Z.ai)، وCursor، وCopilot، وKimi.
 3. أي تحديث بعد كده بيوصل لكل الـ agents مرة واحدة.
 
 ### من نسخة متحمّلة (clone)
@@ -75,9 +75,10 @@ npx skills add omar-hesham/drive-clean -g
 | مشترك (Codex، Gemini CLI، وغيرهم) | `~/.agents/skills/` |
 | Claude Code | `~/.claude/skills/` |
 | Codex (القديم) | `~/.codex/skills/` |
-| Gemini CLI | `~/.gemini/skills/` |
+| Gemini CLI | `~/.agents/skills/` (أو `~/.gemini/skills/`، بس مش الاتنين مع بعض، علشان ما يطلعش تحذير conflict) |
 | Antigravity | `~/.gemini/config/skills/` (والإصدارات الأقدم `~/.gemini/antigravity/skills/`) |
-| OpenCode | `~/.config/opencode/skills/` |
+| OpenCode | `~/.config/opencode/skills/` (و`~/.opencode/skills/`) |
+| ZCode (Z.ai GLM) | `~/.zcode/skills/` |
 | Cursor | `~/.cursor/skills/` |
 | GitHub Copilot CLI | `~/.copilot/skills/` |
 
@@ -208,7 +209,7 @@ item is bigger than the bin).
 - **Install (macOS/Linux):** `curl -fsSL https://raw.githubusercontent.com/omar-hesham/drive-clean/main/install.sh | bash`
 - **Any Agent Skills client:** `npx skills add omar-hesham/drive-clean -g`
 - **CLI:** `python scripts/drive_analyzer.py analyze D:\ --serve`
-- **Agents:** Claude Code, Claude.ai, Codex, Gemini CLI, Antigravity, OpenCode, Cursor, Copilot, Kimi. Ask
+- **Agents:** Claude Code, Claude.ai, Codex, Gemini CLI, Antigravity, OpenCode, ZCode (Z.ai GLM), Cursor, Copilot, Kimi. Ask
   "analyze my D: drive and tell me what to delete".
 - **Tests:** `python -m unittest discover tests`
 

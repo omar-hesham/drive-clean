@@ -3,7 +3,7 @@
 
   Installs the skill once into   %USERPROFILE%\.agents\skills\drive-analyzer   (the shared Agent Skills folder)
   and links it (directory junction, no admin needed) into every AI agent's skills folder that exists:
-    Claude Code, Codex, Gemini CLI, Antigravity, OpenCode, Cursor, GitHub Copilot, Kimi.
+    Claude Code, Codex, Gemini CLI, Antigravity, OpenCode, ZCode (Z.ai GLM), Cursor, GitHub Copilot, Kimi.
   One copy -> updating it updates every agent.
 
   Usage (from a clone):        powershell -ExecutionPolicy Bypass -File .\install.ps1
@@ -21,14 +21,18 @@ $Name = 'drive-analyzer'
 $H = $env:USERPROFILE
 $Canon = Join-Path $H ".agents\skills\$Name"
 
+# Codex and Gemini CLI already read %USERPROFILE%\.agents\skills, so Gemini gets no extra link
+# (a second copy makes Gemini print "Skill conflict detected"). Codex keeps the legacy .codex\skills link
+# for older versions.
 # agent key -> skills folder (relative to the user profile); a folder is used only if the agent is installed
 $Targets = [ordered]@{
   'claude'          = '.claude\skills'
   'codex'           = '.codex\skills'
-  'gemini'          = '.gemini\skills'
   'antigravity'     = '.gemini\config\skills'
   'antigravity-old' = '.gemini\antigravity\skills'
   'opencode'        = '.config\opencode\skills'
+  'opencode-home'   = '.opencode\skills'
+  'zcode'           = '.zcode\skills'
   'cursor'          = '.cursor\skills'
   'copilot'         = '.copilot\skills'
   'kimi'            = '.kimi\skills'
@@ -37,6 +41,9 @@ function AgentInstalled($rel) {
   $first = $rel.Split('\')[0]; if ($first -eq '.config') { $first = '.config\opencode' }
   Test-Path (Join-Path $H $first)
 }
+
+$Legacy = @('.gemini\skills')   # links older installs created; removed on install/uninstall
+foreach ($rel in $Legacy) { $l = Join-Path (Join-Path $H $rel) $Name; if ((Test-Path $l) -and ((Get-Item -LiteralPath $l -Force).Attributes -band [IO.FileAttributes]::ReparsePoint)) { cmd /c rmdir "$l" | Out-Null; Write-Host "removed dup   $l" } }
 
 if ($Uninstall) {
   foreach ($k in $Targets.Keys) {
@@ -65,7 +72,7 @@ Write-Host "installed     $Canon"
 
 # 2) link into every installed agent
 foreach ($k in $Targets.Keys) {
-  if ($Agents.Count -and ($Agents -notcontains $k) -and ($Agents -notcontains ($k -replace '-old',''))) { continue }
+  if ($Agents.Count -and ($Agents -notcontains $k) -and ($Agents -notcontains ($k -replace '-(old|home)$',''))) { continue }
   $rel = $Targets[$k]
   if (-not (AgentInstalled $rel)) { continue }
   $dir = Join-Path $H $rel; $link = Join-Path $dir $Name
