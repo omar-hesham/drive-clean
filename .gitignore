@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+drive-analyzer-reports/
+_to_delete/
+out/
+.DS_Store

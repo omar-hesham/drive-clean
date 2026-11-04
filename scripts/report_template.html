@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>__TITLE__</title>
+<style>
+:root{--bg:#f5f6f8;--card:#fff;--ink:#1d2330;--muted:#667085;--line:#e4e7ec;--soft:#f0f2f5;
+--keep:#1f9d55;--maybe:#c98208;--delete:#d64545;--unknown:#6e59c7;--accent:#2563eb;--ok:#1f9d55}
+@media (prefers-color-scheme:dark){:root{--bg:#11141a;--card:#1a1f27;--ink:#e8ebf0;--muted:#98a2b3;--line:#2a313c;--soft:#222833}}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Segoe UI",Tahoma,"Noto Sans Arabic",Arial,sans-serif;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.55;padding-bottom:90px}
+header{padding:20px 26px 6px;display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex-wrap:wrap}
+h1{margin:0 0 4px;font-size:21px}
+.sub{color:var(--muted);font-size:13px}
+.ltr{direction:ltr;unicode-bidi:isolate;font-family:Consolas,"Cascadia Mono",monospace;font-size:12px;word-break:break-all}
+.banner{margin:8px 26px 0;padding:9px 13px;border-radius:9px;font-size:13px;background:#fff4e5;color:#7a4300;border:1px solid #f5c27a}
+.banner.info{background:#eaf2ff;color:#1e429f;border-color:#b6ccfa}
+main{padding:10px 26px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin:10px 0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.kpi{cursor:default}.kpi.click{cursor:pointer}.kpi.click:hover{outline:2px solid var(--accent)}
+.kpi .v{font-size:21px;font-weight:700;direction:ltr;text-align:right}
+.kpi .l{color:var(--muted);font-size:12.5px}
+.b-keep{border-top:4px solid var(--keep)}.b-maybe{border-top:4px solid var(--maybe)}.b-delete{border-top:4px solid var(--delete)}.b-unknown{border-top:4px solid var(--unknown)}
+.stack{display:flex;height:12px;border-radius:7px;overflow:hidden;background:var(--line)}
+.stack span{display:block;height:100%}
+nav{display:flex;gap:4px;flex-wrap:wrap;margin:14px 0 10px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:5}
+nav button{background:none;border:0;border-bottom:3px solid transparent;padding:9px 11px;font:inherit;color:var(--muted);cursor:pointer}
+nav button.on{color:var(--ink);border-bottom-color:var(--accent);font-weight:600}
+.tab{display:none}.tab.on{display:block}
+.tool{display:flex;gap:8px;align-items:center;margin:6px 0 10px;flex-wrap:wrap}
+input[type=search]{padding:7px 10px;border:1px solid var(--line);border-radius:8px;min-width:240px;background:var(--card);color:var(--ink);font:inherit}
+.btn{padding:7px 12px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);cursor:pointer;font:inherit;white-space:nowrap}
+.btn:hover{border-color:var(--accent)}
+.btn.sm{padding:3px 8px;font-size:12.5px}
+.btn.red{background:var(--delete);border-color:var(--delete);color:#fff}
+.btn.blue{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.grp{background:var(--card);border:1px solid var(--line);border-radius:12px;margin-bottom:10px;overflow:hidden}
+.gh{display:flex;align-items:center;gap:10px;padding:10px 12px;cursor:pointer;background:var(--soft)}
+.gh .t{font-weight:600;flex:1}
+.gh .s{font-weight:700;direction:ltr}
+.gh .c{color:var(--muted);font-size:12.5px}
+.gh .why{display:block;font-weight:400;color:var(--muted);font-size:12.5px}
+.arrow{transition:transform .15s;color:var(--muted)}
+.grp.closed .arrow{transform:rotate(90deg)}
+.grp.closed .rows{display:none}
+.row{display:grid;grid-template-columns:26px 1fr 90px 92px auto;gap:10px;align-items:center;padding:8px 12px;border-top:1px solid var(--line)}
+.row .nm{font-weight:600;word-break:break-all}
+.row .fd{color:var(--muted)}
+.row .sz{direction:ltr;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.row .dt{color:var(--muted);font-size:12.5px;direction:ltr;text-align:right}
+.row .sample{font-size:12px;color:var(--muted)}
+.row .rs{font-size:12px;color:var(--muted)}
+.row.done{opacity:.55}.row.done .nm{text-decoration:line-through}
+.st{font-size:12px;padding:1px 8px;border-radius:999px;white-space:nowrap}
+.st.ok{background:#e7f6ee;color:#11603a}.st.err{background:#fdecec;color:#8a1c1c}
+.tag{display:inline-block;padding:0 7px;border-radius:999px;font-size:11px;border:1px solid var(--line);color:var(--muted);margin-inline-start:6px;font-weight:400}
+.more{padding:8px 12px;border-top:1px solid var(--line);text-align:center}
+input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--accent)}
+table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+th,td{padding:7px 10px;border-bottom:1px solid var(--line);text-align:right;vertical-align:top}
+th{font-size:12.5px;color:var(--muted);font-weight:600;background:var(--soft)}
+td.num{white-space:nowrap;direction:ltr;text-align:right;font-variant-numeric:tabular-nums}
+.bar{height:8px;background:var(--accent);border-radius:4px;min-width:2px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media (max-width:900px){.grid2{grid-template-columns:1fr}.row{grid-template-columns:26px 1fr 80px auto}.row .dt{display:none}}
+h2{font-size:15px;margin:16px 0 8px}
+.muted{color:var(--muted)}
+.child td{font-size:13px;background:var(--soft)}
+.dot{display:inline-block;width:10px;height:10px;border-radius:3px;margin-inline-end:5px}
+#bar{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--line);box-shadow:0 -6px 20px rgba(0,0,0,.08);padding:11px 26px;display:none;align-items:center;gap:10px;flex-wrap:wrap;z-index:20}
+#bar.on{display:flex}
+#bar .sel{font-weight:600;flex:1}
+#modal{position:fixed;inset:0;background:rgba(10,14,20,.5);display:none;align-items:center;justify-content:center;z-index:30}
+#modal.on{display:flex}
+#modal .box{background:var(--card);border-radius:14px;max-width:560px;width:92%;padding:18px 20px;border:1px solid var(--line)}
+#modal h3{margin:0 0 8px}
+#modal ul{margin:6px 0 10px;padding-inline-start:18px;max-height:180px;overflow:auto;font-size:12.5px}
+#toast{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:40;display:flex;flex-direction:column;gap:6px}
+#toast div{background:#1d2330;color:#fff;padding:9px 14px;border-radius:9px;font-size:13px;max-width:80vw}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid #fff;border-top-color:transparent;border-radius:50%;animation:sp 1s linear infinite;vertical-align:-2px}
+@keyframes sp{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<header>
+  <div><h1 id="title"></h1><div class="sub"><span id="root" class="ltr"></span> · <span id="meta"></span></div></div>
+  <div id="hdrbtns" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+</header>
+<div id="banners"></div>
+<main>
+  <div class="kpis" id="kpis"></div>
+  <div class="card"><div class="stack" id="mainstack"></div></div>
+  <nav id="nav"></nav>
+  <section class="tab" id="t-delete"></section>
+  <section class="tab" id="t-maybe"></section>
+  <section class="tab" id="t-unknown"></section>
+  <section class="tab" id="t-keep"></section>
+  <section class="tab" id="t-tree"></section>
+  <section class="tab" id="t-dates"></section>
+  <section class="tab" id="t-largest"></section>
+  <section class="tab" id="t-rules"></section>
+</main>
+<div id="bar"><span class="sel" id="selinfo"></span>
+  <button class="btn blue" id="b-recycle">🗑️ لسلة المحذوفات</button>
+  <button class="btn" id="b-quar">📦 نقل لـ _to_delete</button>
+  <button class="btn red" id="b-delete">⛔ مسح نهائي</button>
+  <button class="btn" id="b-clear">إلغاء التحديد</button></div>
+<div id="modal"><div class="box" id="mbox"></div></div>
+<div id="toast"></div>
+<script>
+const D = __DATA_JSON__;
+const LIVE = D.live;                       // null in the static report, filled by the local panel
+const B = {keep:'احتفظ',maybe:'نص نص',delete:'امسح',unknown:'مش عارف'};
+const BC = {keep:'var(--keep)',maybe:'var(--maybe)',delete:'var(--delete)',unknown:'var(--unknown)'};
+const INTRO = {delete:'حاجات بتترجع لوحدها أو زبالة واضحة — ده المكسب السهل.',
+  maybe:'غالبًا تقدر تشيلها، بس بص عليها الأول.', unknown:'مش واضح دي إيه — قرر إنت أو قول لـ Claude عنها.',
+  keep:'ملفاتك الشخصية والنظام والبرامج. تقدر تختار منها برضو لو عايز، بس بحذر.'};
+const WIN = {empty_bin:'🗑️ فضّي السلة', cleanmgr:'🧹 افتح Disk Cleanup', apps:'⚙️ افتح Apps', power:'ℹ️ إزاي؟'};
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const LTR = s => '⁦'+s+'⁩';
+function fmt(b){ if(!b) return LTR('0'); const u=['B','KB','MB','GB','TB']; let i=0; while(b>=1024&&i<4){b/=1024;i++} return LTR((b>=100||i==0?b.toFixed(0):b.toFixed(1))+' '+u[i]); }
+const n = x => LTR((x||0).toLocaleString('en-US'));
+const pct = (a,b) => b ? LTR((100*a/b).toFixed(1)+'%') : '—';
+let done = (LIVE && LIVE.done) || {};
+let disk = (LIVE && LIVE.disk) || D.disk;
+const picked = new Map();                  // id -> item
+const ITEMS = {}; for(const b in D.items) for(const it of D.items[b]) ITEMS[it.id]=it;
+const PAGE = 40;                           // rows shown per group before "show more"
+const shown = {};                          // group key -> rows shown
+const closed = new Set();
+
+function toast(msg, ms=4500){ const d=document.createElement('div'); d.textContent=msg; $('#toast').appendChild(d); setTimeout(()=>d.remove(), ms); }
+async function api(path, body){
+  const r = await fetch(path, {method: body?'POST':'GET', headers:{'X-Token':LIVE.token,'Content-Type':'application/json'}, body: body?JSON.stringify(body):undefined});
+  const j = await r.json(); if(!r.ok) throw new Error(j.msg||j.error||r.status); return j; }
+
+// ---------- header
+$('#title').textContent = D.title.replace(D.root, LTR(D.root));
+$('#root').textContent = LTR(D.root);
+$('#meta').textContent = `اتحلل ${D.scan_date} · ${(D.files||0).toLocaleString('en-US')} ملف في ${(D.dirs||0).toLocaleString('en-US')} فولدر`;
+function banners(){
+  let h='';
+  if(!LIVE) h+=`<div class="banner info">ده تقرير للعرض بس. الأزرار (سلة المحذوفات / مسح نهائي / افتح المكان) بتشتغل من اللوحة على جهازك: شغّل <b>open-panel.cmd</b> من فولدر التحليل.</div>`;
+  else if(!LIVE.recycle.supported) h+=`<div class="banner">${esc(LIVE.recycle.why)}</div>`;
+  if(!D.complete) h+='<div class="banner">⚠️ المسح ما خلصش — الأرقام لجزء من الدرايف.</div>';
+  if(D.errors) h+=`<div class="banner info">${n(D.errors)} فولدر ماقدرناش نقراهم (صلاحيات) ومش داخلين في الحساب.</div>`;
+  $('#banners').innerHTML=h;
+}
+function hdr(){
+  if(!LIVE) return;
+  $('#hdrbtns').innerHTML = (LIVE.os==='windows'?`<button class="btn" data-win="empty_bin">🗑️ فضّي سلة المحذوفات</button>`:'') +
+    `<button class="btn" id="b-close">قفل اللوحة</button>`;
+  $('#b-close').onclick = async()=>{ await api('/api/shutdown',{}); document.body.innerHTML='<p style="padding:40px;text-align:center">اللوحة اتقفلت. تقدر تفتحها تاني من open-panel.cmd</p>'; };
+}
+function freed(){ let b=0; for(const k in done) if(done[k].ok) b+=done[k].bytes||0; return b; }
+function kpis(){
+  const T=D.totals, tot=D.bytes;
+  let k=`<div class="card kpi"><div class="v">${fmt(disk?.free)}</div><div class="l">فاضي${disk?` من ${fmt(disk.total)}`:''}${LIVE?' · مباشر':''}</div></div>`;
+  if(LIVE) k+=`<div class="card kpi"><div class="v">${fmt(freed())}</div><div class="l">اتشال في اللوحة (اللي في السلة لسه بياخد مساحة)</div></div>`;
+  for(const b of ['delete','maybe','unknown','keep']){ const t=T[b]||{size:0,items:0};
+    k+=`<div class="card kpi click b-${b}" data-go="${b}"><div class="v">${fmt(t.size)}</div><div class="l">${B[b]} · ${pct(t.size,tot)} · ${n(t.items)} عنصر</div></div>`; }
+  $('#kpis').innerHTML=k;
+  $('#mainstack').innerHTML=['delete','maybe','unknown','keep'].map(b=>`<span style="width:${tot?100*(T[b]?.size||0)/tot:0}%;background:${BC[b]}" title="${B[b]}"></span>`).join('');
+}
+
+// ---------- tabs
+const TABS=[['delete','🔴 امسح'],['maybe','🟡 نص نص'],['unknown','🟣 مش عارف'],['keep','🟢 احتفظ'],['tree','المكونات'],['dates','التواريخ'],['largest','أكبر الملفات'],['rules','ليه؟']];
+$('#nav').innerHTML=TABS.map(([id,l])=>`<button data-t="${id}">${l}</button>`).join('');
+function go(t){ document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('on',x.dataset.t==t)); document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x.id=='t-'+t)); }
+$('#nav').onclick=e=>{ if(e.target.dataset.t) go(e.target.dataset.t); };
+
+// ---------- bucket tabs, grouped by category
+const selectable = it => LIVE && !it.locked && !(done[it.id]&&done[it.id].ok);
+function groups(b){ const g=new Map(); for(const it of D.items[b]||[]){ if(!g.has(it.title)) g.set(it.title,{title:it.title,items:[],size:0}); const x=g.get(it.title); x.items.push(it); x.size+=it.size; } return [...g.values()].sort((a,c)=>c.size-a.size); }
+function rowHtml(it){
+  const d=done[it.id];
+  const cb = LIVE ? (it.locked ? '<span title="مقفول — ملف نظام">🔒</span>' : `<input type="checkbox" data-id="${esc(it.id)}" ${picked.has(it.id)?'checked':''} ${selectable(it)?'':'disabled'}>`) : '';
+  const name = it.kind==='group' ? `${n(it.count)} ملف في الفولدر ده` : esc(it.name||it.path);
+  const tag = {folder:'فولدر',file:'ملف',group:'مجموعة'}[it.kind];
+  let act='';
+  if(LIVE){ if(it.win) act+=`<button class="btn sm" data-win="${it.win}">${WIN[it.win]}</button> `;
+    if(!(d&&d.ok)) act+=`<button class="btn sm" data-open="${esc(it.id)}" title="افتح المكان">📂</button>`; }
+  const st = d ? `<span class="st ${d.ok?'ok':'err'}">${d.ok?'✓ ':'✗ '}${esc(d.msg)}</span>` : '';
+  return `<div class="row ${d&&d.ok?'done':''}" data-s="${esc((it.path+' '+it.reason+' '+(it.sample||'')).toLowerCase())}">
+    <div>${cb}</div>
+    <div><div class="nm">${name}<span class="tag">${tag}</span></div><div class="fd ltr">${esc(it.kind==='group'?it.path:it.folder)}</div>
+      ${it.sample?`<div class="sample">مثلًا: ${esc(it.sample)}</div>`:''}<div class="rs">${esc(it.reason)}</div>${st}</div>
+    <div class="sz">${fmt(it.size)}</div><div class="dt">${it.newest}</div><div>${act}</div></div>`;
+}
+function renderBucket(b){
+  const T=D.totals[b]||{}, gs=groups(b), q=(document.querySelector(`#t-${b} input[type=search]`)?.value||'').trim().toLowerCase();
+  let h=`<p>${INTRO[b]}</p><div class="tool">
+    ${LIVE?`<button class="btn" data-all="${b}">☑ اختار الكل في التاب</button>`:''}
+    <input type="search" placeholder="دوّر في الاسم أو المسار أو السبب…" data-q="${b}" value="${esc(q)}">
+    <button class="btn" data-fold="${b}">اقفل/افتح المجموعات</button>
+    <span class="muted">${n(T.items)} عنصر · ${fmt(T.size)}${(D.items[b]||[]).length<T.items?` · معروض أكبر ${n(D.items[b].length)}`:''}</span></div>`;
+  for(const g of gs){
+    const key=b+'|'+g.title, its=g.items.filter(it=>!q||(it.path+' '+it.reason+' '+(it.sample||'')).toLowerCase().includes(q));
+    if(!its.length) continue;
+    const sel=its.filter(selectable), allOn=sel.length&&sel.every(it=>picked.has(it.id));
+    const lim=shown[key]||PAGE;
+    h+=`<div class="grp ${closed.has(key)?'closed':''}" data-g="${esc(key)}"><div class="gh">
+      ${LIVE?`<input type="checkbox" data-gsel="${esc(key)}" ${allOn?'checked':''} ${sel.length?'':'disabled'} title="اختار المجموعة كلها">`:''}
+      <span class="t">${esc(g.title)}<span class="why">${esc(its[0].reason)}</span></span>
+      <span class="c">${n(its.length)} عنصر</span><span class="s">${fmt(its.reduce((a,x)=>a+x.size,0))}</span><span class="arrow">◀</span></div>
+      <div class="rows">${its.slice(0,lim).map(rowHtml).join('')}
+      ${its.length>lim?`<div class="more"><button class="btn sm" data-more="${esc(key)}">اعرض ${n(Math.min(PAGE*3,its.length-lim))} كمان (من ${n(its.length-lim)})</button></div>`:''}</div></div>`;
+  }
+  $('#t-'+b).innerHTML=h;
+}
+function renderAll(){ kpis(); for(const b of ['delete','maybe','unknown','keep']) renderBucket(b); bar(); }
+function visibleSelectable(b){ const q=(document.querySelector(`#t-${b} input[type=search]`)?.value||'').trim().toLowerCase();
+  return (D.items[b]||[]).filter(it=>selectable(it)&&(!q||(it.path+' '+it.reason+' '+(it.sample||'')).toLowerCase().includes(q))); }
+function groupItems(key){ const [b,title]=[key.slice(0,key.indexOf('|')),key.slice(key.indexOf('|')+1)];
+  const q=(document.querySelector(`#t-${b} input[type=search]`)?.value||'').trim().toLowerCase();
+  return (D.items[b]||[]).filter(it=>it.title===title&&selectable(it)&&(!q||(it.path+' '+it.reason+' '+(it.sample||'')).toLowerCase().includes(q))); }
+
+document.addEventListener('click', async e=>{
+  const t=e.target.closest('[data-go],[data-all],[data-fold],[data-more],[data-open],[data-win],.gh');
+  if(!t) return;
+  if(t.dataset.go){ go(t.dataset.go); return; }
+  if(t.dataset.all){ const its=visibleSelectable(t.dataset.all); const on=!its.every(it=>picked.has(it.id)); its.forEach(it=>on?picked.set(it.id,it):picked.delete(it.id)); renderBucket(t.dataset.all); bar(); return; }
+  if(t.dataset.fold){ const b=t.dataset.fold; const ks=groups(b).map(g=>b+'|'+g.title); const anyOpen=ks.some(k=>!closed.has(k)); ks.forEach(k=>anyOpen?closed.add(k):closed.delete(k)); renderBucket(b); return; }
+  if(t.dataset.more){ shown[t.dataset.more]=(shown[t.dataset.more]||PAGE)+PAGE*3; renderBucket(t.dataset.more.split('|')[0]); return; }
+  if(t.dataset.open){ try{ const r=await api('/api/open',{item:t.dataset.open}); toast('📂 '+r.msg);}catch(err){toast('✗ '+err.message);} return; }
+  if(t.dataset.win){ if(t.dataset.win==='empty_bin'&&!await confirmBox({title:'تفضية سلة المحذوفات',danger:true,body:'كل اللي في سلة المحذوفات للدرايف ده هيتمسح نهائي ومش هيرجع.',go:'فضّيها'})) return;
+    try{ const r=await api('/api/win',{kind:t.dataset.win}); toast((r.ok?'✓ ':'✗ ')+r.msg, 7000); if(r.state){disk=r.state.disk; kpis();} }catch(err){toast('✗ '+err.message);} return; }
+  if(t.classList.contains('gh') && e.target.tagName!=='INPUT'){ const g=t.parentNode.dataset.g; closed.has(g)?closed.delete(g):closed.add(g); t.parentNode.classList.toggle('closed'); }
+});
+document.addEventListener('change', e=>{
+  const id=e.target.dataset.id, gk=e.target.dataset.gsel;
+  if(id){ e.target.checked?picked.set(id,ITEMS[id]):picked.delete(id); renderBucket(ITEMS[id].bucket); bar(); }
+  if(gk){ groupItems(gk).forEach(it=>e.target.checked?picked.set(it.id,it):picked.delete(it.id)); renderBucket(gk.split('|')[0]); bar(); }
+});
+document.addEventListener('input', e=>{ if(e.target.dataset.q){ const b=e.target.dataset.q, pos=e.target.selectionStart; renderBucket(b); const i=document.querySelector(`#t-${b} input[type=search]`); i.focus(); i.setSelectionRange(pos,pos);} });
+
+// ---------- action bar + confirm
+function bar(){
+  if(!LIVE){ return; }
+  const its=[...picked.values()], size=its.reduce((a,x)=>a+x.size,0);
+  $('#bar').classList.toggle('on', its.length>0);
+  $('#selinfo').innerHTML=`مختار ${n(its.length)} عنصر · ${fmt(size)}`;
+  $('#b-recycle').disabled=!LIVE.recycle.supported; $('#b-recycle').title=LIVE.recycle.supported?'':LIVE.recycle.why;
+}
+function confirmBox({title,body,danger,go,list}){
+  return new Promise(res=>{
+    $('#mbox').innerHTML=`<h3>${title}</h3><div>${body}</div>${list?`<ul>${list}</ul>`:''}
+      ${danger?'<label style="display:block;margin:10px 0"><input type="checkbox" id="mok"> فاهم إن ده مش هيرجع</label>':''}
+      <div style="display:flex;gap:8px;justify-content:flex-start;margin-top:12px"><button class="btn ${danger?'red':'blue'}" id="myes" ${danger?'disabled':''}>${go}</button><button class="btn" id="mno">إلغاء</button></div>`;
+    $('#modal').classList.add('on');
+    if(danger) $('#mok').onchange=e=>$('#myes').disabled=!e.target.checked;
+    $('#myes').onclick=()=>{ $('#modal').classList.remove('on'); res(true); };
+    $('#mno').onclick=()=>{ $('#modal').classList.remove('on'); res(false); };
+  });
+}
+async function run(op){
+  const its=[...picked.values()]; if(!its.length) return;
+  const size=its.reduce((a,x)=>a+x.size,0), keepN=its.filter(x=>x.bucket==='keep').length;
+  const list=its.slice(0,8).map(x=>`<li><span class="ltr">${esc(x.kind==='group'?x.path+' ('+x.count+' ملف)':x.path)}</span> — ${fmt(x.size)}</li>`).join('')+(its.length>8?`<li>… و${its.length-8} كمان</li>`:'');
+  const warn = keepN?`<p style="color:var(--delete)">⚠️ فيه ${keepN} عنصر من "احتفظ" ضمن المختار.</p>`:'';
+  const cfg={recycle:{title:'نقل لسلة المحذوفات',go:'انقلهم للسلة',body:`${n(its.length)} عنصر (${fmt(size)}) هيروحوا لسلة المحذوفات وتقدر ترجّعهم منها. المساحة بتتحرر لما تفضّي السلة.${warn}`},
+    quarantine:{title:'نقل لفولدر _to_delete',go:'انقلهم',body:`${n(its.length)} عنصر (${fmt(size)}) هيتنقلوا لـ _to_delete على نفس الدرايف (فيه manifest للرجوع). المساحة بتتحرر لما تمسح الفولدر ده.${warn}`},
+    delete:{title:'مسح نهائي',danger:true,go:'امسح نهائي',body:`<b>${n(its.length)} عنصر (${fmt(size)}) هيتمسحوا نهائي — مش هيروحوا السلة ومش هيرجعوا.</b>${warn}`}}[op];
+  if(!await confirmBox({...cfg,list})) return;
+  const btn={recycle:'#b-recycle',quarantine:'#b-quar',delete:'#b-delete'}[op], old=$(btn).innerHTML;
+  document.querySelectorAll('#bar button').forEach(b=>b.disabled=true); $(btn).innerHTML='<span class="spin"></span> جاري التنفيذ…';
+  try{
+    const r=await api('/api/act',{op,items:its.map(x=>x.id)});
+    let ok=0,fail=0,bytes=0; for(const x of r.results){ done[x.item]={op,ok:x.ok,bytes:x.bytes,msg:x.msg}; x.ok?ok++:fail++; bytes+=x.bytes; if(x.ok) picked.delete(x.item); }
+    if(r.state){ disk=r.state.disk; }
+    toast(`✓ خلص ${ok}${fail?` · ✗ ${fail} ماتمّش (شوف السبب جنب كل عنصر)`:''} · ${fmt(bytes)}`, 7000);
+  }catch(err){ toast('✗ '+err.message, 8000); }
+  $(btn).innerHTML=old; document.querySelectorAll('#bar button').forEach(b=>b.disabled=false); renderAll();
+}
+if(LIVE){ $('#b-recycle').onclick=()=>run('recycle'); $('#b-quar').onclick=()=>run('quarantine'); $('#b-delete').onclick=()=>run('delete');
+  $('#b-clear').onclick=()=>{ picked.clear(); renderAll(); }; }
+
+// ---------- components
+function stack(bk,size){ return `<div class="stack" style="height:9px;min-width:110px">${['delete','maybe','unknown','keep'].map(b=>`<span style="width:${size?100*(bk[b]||0)/size:0}%;background:${BC[b]}"></span>`).join('')}</div>`; }
+(function(){ const tot=D.bytes;
+  let h='<h2>الفولدرات الرئيسية</h2><p class="muted">دوس على فولدر يفتح اللي جواه. الشريط: أحمر امسح · أصفر نص نص · بنفسجي مش عارف · أخضر احتفظ.</p><table><tr><th>الفولدر</th><th>الحجم</th><th>%</th><th>ملفات</th><th>أحدث تعديل</th><th>أقدم تعديل</th><th>التوصيات</th></tr>';
+  D.tree1.forEach(r=>{ h+=`<tr class="t1" data-k="${esc(r.name)}" style="cursor:pointer"><td class="ltr">${esc(r.path)}</td><td class="num">${fmt(r.size)}</td><td class="num">${pct(r.size,tot)}</td><td class="num">${n(r.count)}</td><td class="num">${r.newest}</td><td class="num">${r.oldest}</td><td>${stack(r.buckets,r.size)}</td></tr>`; });
+  h+='</table>'; const mx=Math.max(...D.fams.map(f=>f.size),1);
+  h+='<h2>حسب نوع الملف</h2><table><tr><th>النوع</th><th>الحجم</th><th></th><th>ملفات</th></tr>'+D.fams.map(f=>`<tr><td>${esc(f.label)}</td><td class="num">${fmt(f.size)}</td><td style="width:40%"><div class="bar" style="width:${100*f.size/mx}%"></div></td><td class="num">${n(f.count)}</td></tr>`).join('')+'</table>';
+  $('#t-tree').innerHTML=h;
+  document.querySelectorAll('#t-tree tr.t1').forEach(tr=>tr.onclick=()=>{
+    if(tr.nextSibling?.classList?.contains('child')){ while(tr.nextSibling?.classList?.contains('child')) tr.nextSibling.remove(); return; }
+    let after=tr; D.tree2.filter(x=>x.name.startsWith(tr.dataset.k+'/')).slice(0,25).forEach(x=>{ const r=document.createElement('tr'); r.className='child';
+      r.innerHTML=`<td class="ltr">↳ ${esc(x.path)}</td><td class="num">${fmt(x.size)}</td><td class="num">${pct(x.size,tot)}</td><td class="num">${n(x.count)}</td><td class="num">${x.newest}</td><td></td><td></td>`; after.after(r); after=r; }); });
+})();
+// ---------- dates
+(function(){ const mA=Math.max(...D.ages.map(a=>a.size),1), mY=Math.max(...D.years.map(a=>a.size),1);
+  $('#t-dates').innerHTML=`<div class="grid2"><div><h2>عمر الملفات (آخر تعديل)</h2><table><tr><th>آخر تعديل</th><th>الحجم</th><th></th><th>ملفات</th></tr>${D.ages.map(a=>`<tr><td>${a.label}</td><td class="num">${fmt(a.size)}</td><td style="width:45%"><div class="bar" style="width:${100*a.size/mA}%"></div></td><td class="num">${n(a.count)}</td></tr>`).join('')}</table></div>
+  <div><h2>حسب السنة</h2><table><tr><th>السنة</th><th>الحجم</th><th></th><th>ملفات</th></tr>${D.years.slice().reverse().map(a=>`<tr><td class="num">${a.year}</td><td class="num">${fmt(a.size)}</td><td style="width:45%"><div class="bar" style="width:${100*a.size/mY}%"></div></td><td class="num">${n(a.count)}</td></tr>`).join('')}</table></div></div>
+  <p class="muted">التاريخ هو آخر تعديل (Modified). تاريخ الإنشاء بيتغير مع النسخ، وآخر فتح مش بيتسجل على أغلب الأجهزة.</p>`; })();
+// ---------- largest
+$('#t-largest').innerHTML='<table><tr><th>الملف</th><th>الحجم</th><th>آخر تعديل</th><th>التوصية</th><th>السبب</th>'+(LIVE?'<th></th>':'')+'</tr>'+D.largest.map(r=>`<tr><td class="ltr">${esc(r.path)}</td><td class="num">${fmt(r.size)}</td><td class="num">${r.mtime}</td><td><span class="dot" style="background:${BC[r.bucket]}"></span>${B[r.bucket]}</td><td>${esc(r.reason)}</td>${LIVE?`<td><button class="btn sm" data-open="${esc(r.id)}">📂</button></td>`:''}</tr>`).join('')+'</table>';
+// ---------- rules
+$('#t-rules').innerHTML='<p class="muted">كل فئة اتطبقت وعلى قد إيه مساحة.</p><table><tr><th>التوصية</th><th>الفئة</th><th>السبب</th><th>الحجم</th><th>ملفات</th></tr>'+D.rules.map(r=>`<tr><td><span class="dot" style="background:${BC[r.bucket]}"></span>${B[r.bucket]}</td><td>${esc(r.title)}</td><td>${esc(r.reason)}</td><td class="num">${fmt(r.size)}</td><td class="num">${n(r.count)}</td></tr>`).join('')+'</table>';
+
+banners(); hdr(); renderAll(); go('delete');
+if(LIVE) setInterval(async()=>{ try{ const s=await api('/api/state'); disk=s.disk; kpis(); }catch(e){} }, 30000);
+</script>
+</body>
+</html>
