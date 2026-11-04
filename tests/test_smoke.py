@@ -74,7 +74,8 @@ class Smoke(unittest.TestCase):
         subprocess.run([sys.executable, DA, 'apply', plan, '--confirm'], check=True, capture_output=True)
         self.assertFalse(os.path.exists(nm))
         q = os.path.join(self.root, '_to_delete')
-        man = [os.path.join(q, d, 'manifest.csv') for d in os.listdir(q)][0]
+        man = [m for m in (os.path.join(q, d, 'manifest.csv') for d in sorted(os.listdir(q)))
+               if 'node_modules' in open(m, encoding='utf-8-sig').read()][-1]
         subprocess.run([sys.executable, DA, 'undo', man, '--confirm'], check=True, capture_output=True)
         self.assertTrue(os.path.exists(nm))
 
@@ -102,6 +103,8 @@ class Smoke(unittest.TestCase):
             self.assertFalse(r['ok'])                                   # not in inventory
         finally:
             p.terminate()
+            p.wait()
+            p.stdout.close()
 
 
 if __name__ == '__main__':

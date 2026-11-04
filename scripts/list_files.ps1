@@ -1,5 +1,5 @@
 <#
-  drive-analyzer / list_files.ps1 — FALLBACK lister for machines without Python.
+  drive-analyzer / list_files.ps1 - FALLBACK lister for machines without Python.
   Writes a UTF-8 TSV: rel <TAB> size <TAB> mtime_epoch <TAB> ctime_epoch
   Then stage the TSV into the workspace and run:
     python drive_analyzer.py import-listing files.tsv --db inv.sqlite --root "D:\" --display-root "D:\"

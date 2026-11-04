@@ -226,7 +226,7 @@ class Panel:
         os.makedirs(qdir, exist_ok=True)
         new = not os.path.exists(man)
         import csv
-        with open(man, 'a', encoding='utf-8-sig', newline='') as f:
+        with open(man, 'a', encoding='utf-8-sig' if new else 'utf-8', newline='') as f:
             w = csv.writer(f)
             if new:
                 w.writerow(['src', 'dst', 'size', 'status'])

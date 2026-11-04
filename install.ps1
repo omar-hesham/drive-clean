@@ -1,10 +1,10 @@
 <#
-  drive-analyzer — Windows installer.
+  drive-analyzer - Windows installer.
 
   Installs the skill once into   %USERPROFILE%\.agents\skills\drive-analyzer   (the shared Agent Skills folder)
   and links it (directory junction, no admin needed) into every AI agent's skills folder that exists:
     Claude Code, Codex, Gemini CLI, Antigravity, OpenCode, Cursor, GitHub Copilot, Kimi.
-  One copy → updating it updates every agent.
+  One copy -> updating it updates every agent.
 
   Usage (from a clone):        powershell -ExecutionPolicy Bypass -File .\install.ps1
   One-liner (no clone):        irm https://raw.githubusercontent.com/<owner>/<repo>/main/install.ps1 | iex
@@ -83,6 +83,6 @@ foreach ($k in $Targets.Keys) {
 $py = Get-Command python -ErrorAction SilentlyContinue
 if (-not $py) { $py = Get-Command py -ErrorAction SilentlyContinue }
 if ($py) { Write-Host "python        $(& $py.Source --version 2>&1)" }
-else { Write-Warning 'Python 3.8+ was not found. Install it (winget install Python.Python.3.12) — the skill needs it.' }
-Write-Host "`nDone. Restart your agents, then ask: 'حلل الدرايف D:' or 'analyze my D: drive'."
+else { Write-Warning 'Python 3.8+ was not found. Install it (winget install Python.Python.3.12) - the skill needs it.' }
+Write-Host "`nDone. Restart your agents, then ask your agent: 'analyze my D: drive'."
 Write-Host "Without an agent:  python `"$Canon\scripts\drive_analyzer.py`" analyze D:\ --serve"

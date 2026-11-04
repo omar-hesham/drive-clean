@@ -774,9 +774,11 @@ def apply(plan_path, confirm=False):
     man_path = os.path.join(qdir, 'manifest.csv')
     moved = skipped = 0
     moved_bytes = 0
-    with open(man_path, 'w', encoding='utf-8-sig', newline='') as mf:
+    new_manifest = not os.path.exists(man_path)   # never overwrite another run's manifest (same second)
+    with open(man_path, 'a', encoding='utf-8-sig' if new_manifest else 'utf-8', newline='') as mf:
         w = csv.writer(mf)
-        w.writerow(['src', 'dst', 'size', 'status'])
+        if new_manifest:
+            w.writerow(['src', 'dst', 'size', 'status'])
         for t in p['targets']:
             src = os.path.join(root, *t['rel'].split('/'))
             dst = os.path.join(qdir, *t['rel'].split('/'))
